@@ -1,0 +1,510 @@
+//====================================================
+// Desenvolvido por Niunzin
+// Sinta-se livre para usar e editar
+//====================================================
+// Esse NPC serve para substituir o campo de aprendiz
+// e a mestre das classes para aprendizes.
+// Recomendado para servidores de rate baixa.
+// Compatível com Hercules (não testado com outros)
+//================================================
+// Alterações:
+//================================================
+// 	- Emulador
+//------------------------------------------------
+// quest_db
+// {
+//	Id: 900
+//	Name: "Fale com o Veterano"
+// },
+// {
+//	Id: 901
+//	Name: "Alcance o nível 10 de classe"
+// },
+// {
+//	Id: 902
+//	Name: "Mude de classe"
+// },
+//================================================
+//	- Cliente
+//------------------------------------------------
+// Pacote de Mapas do Aly:
+// https://rathena.org/board/files/file/3428-pack-of-maps-aly/
+// Sim, o nome do NPC foi uma homenagem ao criador desse pack.
+// questid2display
+// 900#Fale com o Veterano#SG_FEEL#QUE_NOIMAGE#
+// Obtenha informacoes antes de comecar sua jornada.#
+// #
+// 901#Ate o 10!#SG_FEEL#QUE_NOIMAGE#
+// Alcance o nivel 10 de classe.#
+// #
+// 902#Escolha uma profissao#SG_FEEL#QUE_NOIMAGE#
+// Hora de escolher seu destino.#
+// #
+//================================================
+
+garden,47,86,3	script	Veterano	4W_SAILOR,{
+	if(questprogress(900) != 2)
+	{
+		setquest(900);
+		mes("[Veterano]");
+		mes("Olá " + strcharinfo(0) + ", seja bem-vindo ao nosso servidor.");
+		mes("Talvez essa seja a única vez que você veja");
+		next();
+		mes("[Veterano]");
+		mes("nossos NPCs se referindo ao servidor ou coisas OOC.");
+		mes("Isso porque, valorizamos o Roleplay.");
+		next;
+		switch(select("Hãan? Como assim?"))
+		{
+			case 1:
+			mes("[Veterano]");
+			mes("Queremos proporcionar uma rara experiência, tão difícil de encontrar nos servidores atuais de Ragnarok.");
+			next();
+			mes("[Veterano]");
+			mes("Começando pelo básico, nós temos dezenas de itens, nos quais, em servidores tradicionais seriam obtidos apenas por ROPs.");
+			next();
+			mes("[Veterano]");
+			mes("Porém, possuímos um sistema de tickets, no qual você pode obter vários desses itens, sem precisar doar um centavo!");
+			next();
+			mes("[Veterano]");
+			mes("Mas um servidor não sobrevive apenas de caridade, precisamos de retorno para manter nossa hospedagem e dedicação ativos.");
+			next();
+			mes("[Veterano]");
+			mes("Por isso, nós possuímos um sistema de doação, onde você pode conseguir esses itens de maneira mais fácil.");
+			next();
+			mes("[Veterano]");
+			mes("Mas não significa que sem doar, seja complicado conseguir esses itens.");
+			next();
+			mes("[Veterano]");
+			mes("Enfim, chega desse discurso, preciso voltar ao assunto principal, o roleplay.");
+			next();
+			switch(select("O que é roleplay??"))
+			{
+				mes("[Veterano]");
+				mes("Bom, a definição é muito superficial, então irei lhe explicar na prática.");
+				next();
+				mes("[Veterano]");
+				mes("Do ponto de vista como um jogador, eu sou apenas um NPC.");
+				mes("Mas esqueça esse ponto de vista, aqui, você é um aventureiro, e eu sou um cidadão de Rune Midgard, assim como você.");
+				next();
+				mes("[Veterano]");
+				mes("Nós não vivemos em um servidor, mas sim em um mundo, e ele é real.");
+				mes("Existem muitas pesoas nele, boas e más.");
+				next();
+				mes("[Veterano]");
+				mes("Bom, espero que você tenha conseguido entender ao menos o básico, pois a partir de agora");
+				mes("eu não devo ser chamado de NPC, ok?");
+				next();
+				mes("[^0000ff" + strcharinfo(0) + "^000000]");
+				mes("Certo, eu entendi!");
+				next();
+				mes("[Veterano]");
+				mes("Ok, eu fico muito feliz em ter você aqui.");
+				mes("Para começar, por favor, mate algum desses monstros.");
+				next();
+				mes("[Veterano]");
+				mes("Eles não são fracos, mas eu acredito no seu potencial!");
+				mes("Mate-os até atingir o nível de classe 10.");
+				next();
+				mes("[Veterano]");
+				mes("Quando estiver preparado, fale comigo novamente.");
+				completequest(900);
+				setquest(901);
+				close();
+			}
+		}
+	} else
+	{
+		if(JobLevel < 10)
+		{
+			mes("[Veterano]");
+			mes("Você ainda não é forte o suficiente para deixar esse campo.");
+			close();
+		} else {
+			completequest(901);
+			mes("[Veterano]");
+			mes("Gostei de ver!");
+			mes("Você já está apto para escolher uma profissão.");
+			mes("Irei te acompanhar até o barco.");
+			next();
+			mes("[Veterano]");
+			mes("E, então, você irá até o local onde fará a escolha da sua classe.");
+			mes("Lembre-se, essa é uma das escolhas mais importante da sua vida, pense bem com cautela.");
+			next();
+			mes("[Veterano]");
+			mes("Siga-me...");
+			close2();
+			warp "fishingboat",55,43;
+		}
+	}
+	
+	OnInit:
+	questinfo(900, QTYPE_QUEST, 0, Job_Novice);
+	end;
+}
+
+fishingboat,55,39,7	script	Barqueiro	4W_SAILOR,{
+	if(barqueiroTrigger == 0)
+	{
+		set(barqueiroTrigger,1);
+		mes("[Barqueiro]");
+		mes("Estamos indo até o deserto, um local sagrado onde Aly irá te orientar para escolher sua classe!");
+		next();
+		mes("[Barqueiro]");
+		mes("Devemos chegar em alguns instantes, tenha paciência.");
+		close2();
+		sleep2(15000);
+		mes("[Barqueiro]");
+		mes("Chegamos!");
+		next();
+		mes("[Barqueiro]");
+		mes("Foi um prazer lhe conhecer, " + strcharinfo(0) + "!");
+		mes("Boa sorte.");
+		close2();
+		warp "desert",50,50;
+	} else {
+		mes("[Barqueiro]");
+		mes("Nossa, mas você é muito impaciente, hein?");
+		mes("Nós já estamos chegando!");
+		close();
+	}
+}
+
+desert,51,73,3	script	Aly	4_TOWER_14,{
+	if(questprogress(900) != 2)
+	{
+		mes("[Aly]");
+		mes("Me desculpe, mas você pulou alguma etapa durante a sua jornada, eu não posso te transformar em um guerreiro.");
+		close();
+	}
+	
+	if(questprogress(902) != 0)
+	{
+		if(Class == Job_Novice)
+		{
+			mes("[Aly]");
+			mes("Você parece meio indeciso, não é mesmo?");
+			mes("Continue pensando...");
+			close();
+		} else
+		{
+			mes("[Aly]");
+			mes("Você já está preparado para encarar o mundo lá fora.");
+			next();
+			mes("[Aly]");
+			mes("Boa sorte na sua nova jornada, tenha juízo e aprenda muito!");
+			close2();
+			warp "prontera",155,185;
+			savepoint("prontera", 155,185);
+		}
+	}
+	
+	mes("[Aly]");
+	mes("Uaaaal, olá " + strcharinfo(0) + "!!!");
+	mes("Eu estava esperando por você, que bom que chegou!");
+	next();
+	mes("[Aly]");
+	mes("Como foi a viagem? Espero que tenha sido tranquila!");
+	next();
+	mes("[^0000ff" + strcharinfo(0) + "^000000]");
+	mes("Sim, foi bem tranquila! Apesar de ter chegue através de um barco de pesca.");
+	mes("~ Hahaha");
+	next();
+	mes("[Aly]");
+	mes("É o que podemos fornecer, Midgard está sem recursos devido à corrupção, mas precisamos continuar formando novos guerreiros para combater os monstros.");
+	next();
+	mes("[Aly]");
+	mes("Isso me fez lembrar de Morroc, talvez você não conheça, mas há 7 anos atrás ela foi devastada pelo terrível imperador.");
+	next();
+	mes("[Aly]");
+	mes("Ficou totalmente arrasada!");
+	next();
+	mes("[^0000ff" + strcharinfo(0) + "^000000]");
+	mes("...");
+	next();
+	mes("[Aly]");
+	mes("Estou desviando de assunto, não é?");
+	mes("Me perdoe, sou meio afobada mesmo.");
+	next();
+	mes("[Aly]");
+	mes("Vamos lá, fale com algum desses aventureiros que estão próximos de você, eles são de profissões distintas.");
+	next();
+	mes("[Aly]");
+	mes("Eles poderão te ajudar a ser como eles, se tiver o que for necessário, e também lhe ajudarão com itens para sua jornada!");
+	next();
+	mes("[Aly]");
+	mes("Siga, em frente.");
+	mes("^ccc000~ Olhe para o lado, se liga no mestiço...^000000");
+	mes(" ... ");
+	mes("AIN COMO EU SOU ENGRAÇADA, enfim, escolha sua profissão.");
+	setquest(902);
+	close();
+	
+	OnInit:
+	questinfo(902, QTYPE_QUEST, 0, Job_Novice);
+	end;
+}
+
+desert,48,69,5	script	Espadachim	4_M_SWORDMAN,{
+	setarray(.@items[0],Plate_Armor_,Shield_,Boots_,Manteau_,Clip,Clip,Helm_,Iron_Cane);
+	set(.@classe$,"Espadachim");
+	if(Class != Job_Novice)
+	{
+		close();
+	}
+	mes("[" + .@classe$ + "]");
+	mes("Tornando-se um " + .@classe$ + ", você poderá seguir a seguinte carreira:");
+	mes("Cavaleiro -> Lorde -> Cavaleiro Rúnico");
+	mes("   ou");
+	mes("Templário -> Paladino -> Guardião Real");
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Itens que eu posso te dar:");
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+	{
+		mes("1x " + getitemname(.@items[.@i]));
+	}
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Deseja se tornar um^0000ff " + .@classe$ + "^000000?");
+	next();
+	switch(select("Sim!:Não, preciso pensar melhor"))
+	{
+		case 1:
+		for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+		{
+			getitembound(.@items[.@i], 1, 4);
+		}
+		jobchange Job_Swordman;
+		completequest(902);
+		close();
+		case 2:
+		close();
+	}
+	close();
+}
+
+desert,45,67,5	script	Mago	4_M_ARUNA_NFM1,{
+	setarray(.@items[0],Silk_Robe_,Guard_,Shoes_,Muffler_,Clip,Clip,Wizardry_Hat);
+	set(.@classe$,"Mago");
+	if(Class != Job_Novice)
+	{
+		close();
+	}
+	mes("[" + .@classe$ + "]");
+	mes("Tornando-se um " + .@classe$ + ", você poderá seguir a seguinte carreira:");
+	mes("Bruxo -> Arquimago -> Arcano");
+	mes("   ou");
+	mes("Sábio -> Professor -> Feiticeiro");
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Itens que eu posso te dar:");
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+	{
+		mes("1x " + getitemname(.@items[.@i]));
+	}
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Deseja se tornar um^0000ff " + .@classe$ + "^000000?");
+	next();
+	switch(select("Sim!:Não, preciso pensar melhor"))
+	{
+		case 1:
+		for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+		{
+			getitembound(.@items[.@i], 1, 4);
+		}
+		jobchange Job_Mage;
+		completequest(902);
+		close();
+		case 2:
+		close();
+	}
+	close();
+}
+
+desert,42,65,5	script	Arqueiro	4_M_ARCHER,{
+	setarray(.@items[0],Tights_,Kakkung_,Boots_,Muffler_,Clip,Clip,Apple_Of_Archer);
+	set(.@classe$,"Arqueiro");
+	if(Class != Job_Novice)
+	{
+		close();
+	}
+	mes("[" + .@classe$ + "]");
+	mes("Tornando-se um " + .@classe$ + ", você poderá seguir a seguinte carreira:");
+	mes("Caçador -> Atirador de Elite -> Sentinela");
+	mes("   ou");
+	mes("Bardo -> Menestrel -> Trovador");
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Itens que eu posso te dar:");
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+	{
+		mes("1x " + getitemname(.@items[.@i]));
+	}
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Deseja se tornar um^0000ff " + .@classe$ + "^000000?");
+	next();
+	switch(select("Sim!:Não, preciso pensar melhor"))
+	{
+		case 1:
+		for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+		{
+			getitembound(.@items[.@i], 1, 4);
+		}
+		jobchange Job_Archer;
+		completequest(902);
+		close();
+		case 2:
+		close();
+	}
+	close();
+}
+
+desert,42,62,5	script	Noviço	4_F_ACOLYTE,{
+	setarray(.@items[0],Saint_Robe_,Buckler_,Shoes_,Muffler_,Clip,Clip,Biretta_);
+	set(.@classe$,"Noviço");
+	if(Class != Job_Novice)
+	{
+		close();
+	}
+	mes("[" + .@classe$ + "]");
+	mes("Tornando-se um " + .@classe$ + ", você poderá seguir a seguinte carreira:");
+	mes("Sacerdote -> Sumo Sacerdote -> Arcebispo");
+	mes("   ou");
+	mes("Monge -> Mestre -> Shura");
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Itens que eu posso te dar:");
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+	{
+		mes("1x " + getitemname(.@items[.@i]));
+	}
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Deseja se tornar um^0000ff " + .@classe$ + "^000000?");
+	next();
+	switch(select("Sim!:Não, preciso pensar melhor"))
+	{
+		case 1:
+		for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+		{
+			getitembound(.@items[.@i], 1, 4);
+		}
+		jobchange Job_Acolyte;
+		completequest(902);
+		close();
+		case 2:
+		close();
+	}
+	close();
+}
+
+desert,42,59,5	script	Mercador	4_F_JOB_BLACKSMITH,{
+	setarray(.@items[0],Chain_Mail_,Buckler_,Boots_,Manteau_,Clip,Clip,Bankruptcy_Of_Heart);
+	set(.@classe$,"Mercador");
+	if(Class != Job_Novice)
+	{
+		close();
+	}
+	mes("[" + .@classe$ + "]");
+	mes("Tornando-se um " + .@classe$ + ", você poderá seguir a seguinte carreira:");
+	mes("Ferreiro -> Mestre-Ferreiro -> Mecânico");
+	mes("   ou");
+	mes("Alquimista -> Criador -> Bioquímico");
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Itens que eu posso te dar:");
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+	{
+		mes("1x " + getitemname(.@items[.@i]));
+	}
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Deseja se tornar um^0000ff " + .@classe$ + "^000000?");
+	next();
+	switch(select("Sim!:Não, preciso pensar melhor"))
+	{
+		case 1:
+		for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+		{
+			getitembound(.@items[.@i], 1, 4);
+		}
+		jobchange Job_Merchant;
+		completequest(902);
+		close();
+		case 2:
+		close();
+	}
+	close();
+}
+
+desert,53,69,3	script	Gatuno	2_M_THIEFMASTER,{
+	setarray(.@items[0],Thief_Clothes_,Buckler_,Boots_,Manteau_,Clip,Clip,Ghost_Bandana);
+	set(.@classe$,"Gatuno");
+	if(Class != Job_Novice)
+	{
+		close();
+	}
+	mes("[" + .@classe$ + "]");
+	mes("Tornando-se um " + .@classe$ + ", você poderá seguir a seguinte carreira:");
+	mes("Mercenário -> Algoz -> Sicário");
+	mes("   ou");
+	mes("Arruaceiro -> Desordeiro -> Renegado");
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Itens que eu posso te dar:");
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+	{
+		mes("1x " + getitemname(.@items[.@i]));
+	}
+	next();
+	mes("[" + .@classe$ + "]");
+	mes("Deseja se tornar um^0000ff " + .@classe$ + "^000000?");
+	next();
+	switch(select("Sim!:Não, preciso pensar melhor"))
+	{
+		case 1:
+		for (.@i = 0; .@i < getarraysize(.@items); ++.@i)
+		{
+			getitembound(.@items[.@i], 1, 4);
+		}
+		jobchange Job_Thief;
+		completequest(902);
+		close();
+		case 2:
+		close();
+	}
+	close();
+}
+
+desert,56,67,3	script	Super Aprendiz	4_F_NOVICE,{
+	mes("[Super Aprendiz]");
+	close();
+}
+
+desert,59,65,3	script	Taekwon	4_F_TAEKWON,{
+	mes("[Taekwon]");
+	close();
+}
+
+desert,59,62,3	script	Gunslinger	4_M_GUNSLINGER2,{
+	mes("[Gunslinger]");
+	close();
+}
+
+desert,59,59,3	script	Ninja	4_M_NINJA_BLUE,{
+	mes("[Ninja]");
+	close();
+}
+
+desert,61,72,3	script	Bebê Aprendiz	4_M_SIT_NOVICE,{
+	mes("[Bebê Aprendiz]");
+	close();
+}
+
+garden,0,0,0,0	monster	Lunatic	1063,3,5000,0,0
+garden,0,0,0,0	monster	Poring	1002,3,5000,0,0
+garden,0,0,0,0	monster	Fabre	1007,3,5000,0,0
+garden,0,0,0,0	monster	Little Poring	2398,3,50000,0,0
